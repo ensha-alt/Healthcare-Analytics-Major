@@ -1,4 +1,4 @@
-# IMPORTS 
+# ===================== IMPORTS =====================
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -10,20 +10,20 @@ import sqlite3
 import google.generativeai as genai
 from statsmodels.tsa.arima.model import ARIMA
 
-#  PAGE CONFIG 
+# ===================== PAGE CONFIG =====================
 st.set_page_config(
     page_title="Healthcare Analytics with Forecast",
     page_icon="🏥",
     layout="wide"
 )
 
-#  THEME COLORS 
+# ===================== THEME COLORS =====================
 PRIMARY_COLOR = "#10b981" # Emerald Green
 SECONDARY_COLOR = "#0d2e33" # Deep Teal
 BG_COLOR = "#f8fafc"
 CHART_COLORS = ['#10b981', '#0d2e33', '#3b82f6', '#f59e0b', '#ef4444']
 
-#  SESSION STATE
+# ================= SESSION STATE =================
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
 if "hospital" not in st.session_state:
@@ -31,7 +31,7 @@ if "hospital" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-#  GEMINI API CONFIG 
+# ===================== GEMINI API CONFIG =====================
 # Requires a .streamlit/secrets.toml file with: GEMINI_API_KEY = "your_key"
 try:
     genai.configure(api_key=st.secrets.get("GEMINI_API_KEY", ""))
@@ -39,8 +39,8 @@ try:
     api_configured = True
 except Exception:
     api_configured = False
-    
-# GLOBAL CSS THEME 
+
+# ===================== GLOBAL CSS THEME =====================
 def apply_global_theme():
     st.markdown(f"""
         <style>
@@ -68,41 +68,75 @@ def apply_global_theme():
         </style>
     """, unsafe_allow_html=True)
 
-# DYNAMIC LOGIN PAGE 
+# ===================== DYNAMIC LOGIN PAGE =====================
 def login_page():
     st.markdown(f"""
         <style>
-        .stApp {{ background: linear-gradient(135deg, {SECONDARY_COLOR} 0%, {PRIMARY_COLOR} 100%); }}
-        .login-card {{
-            background: rgba(255, 255, 255, 0.95);
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        /* 1. Dark, professional gradient background for the whole page */
+        .stApp {{ background: linear-gradient(135deg, #0f172a 0%, #0d2e33 100%); }}
+        
+        /* 2. Ensure the title is bright white and legible */
+        .main-title {{ 
+            color: #ffffff !important; 
+            font-size: 36px; 
+            font-weight: 800; 
+            text-align: center; 
+            margin-bottom: 5px; 
+            font-family: 'Segoe UI', sans-serif;
         }}
-        .main-title {{ color: {SECONDARY_COLOR}; font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 5px; }}
-        .sub-title {{ color: #64748b; font-size: 16px; text-align: center; margin-bottom: 30px; }}
+        
+        /* 3. Ensure the subtitle is light grey and readable */
+        .sub-title {{ 
+            color: #cbd5e1 !important; 
+            font-size: 16px; 
+            text-align: center; 
+            margin-bottom: 25px; 
+        }}
+        
+        /* 4. Make the Streamlit Form itself act as the white card */
+        [data-testid="stForm"] {{
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: none;
+        }}
+        
+        /* 5. Style the Login button */
+        [data-testid="stFormSubmitButton"] > button {{
+            width: 100%;
+            background-color: #10b981;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            padding: 0.6rem;
+            transition: all 0.3s ease;
+        }}
+        [data-testid="stFormSubmitButton"] > button:hover {{
+            background-color: #059669;
+            color: white;
+            transform: translateY(-2px);
+        }}
         </style>
     """, unsafe_allow_html=True)
 
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    _, col2, _ = st.columns([1, 1.5, 1])
+    st.markdown("<br>", unsafe_allow_html=True)
+    _, col2, _ = st.columns([1, 1.2, 1])
 
     with col2:
-        st.markdown("<div class='login-card'>", unsafe_allow_html=True)
-        col_img1, col_img2, col_img3 = st.columns([1,2,1])
-        with col_img2:
-            st.image("https://cdn-icons-png.flaticon.com/512/3063/3063176.png", use_container_width=True)
-        
-        st.markdown("<h2 class='main-title'>Healthcare Analytics with forecast</h2>", unsafe_allow_html=True)
-        st.markdown("<p class='sub-title'>Predictive insights for modern hospital management.</p>", unsafe_allow_html=True)
+        st.image("https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop", use_container_width=True)
+        st.markdown("<h2 class='main-title'>Healthcare Analytics</h2>", unsafe_allow_html=True)
+        st.markdown("<p class='sub-title'>Predictive insights for modern hospital management</p>", unsafe_allow_html=True)
 
         with st.form("login_form"):
-            username = st.text_input("Username", placeholder="admin")
+            st.markdown("#### Secure Access")
+            username = st.text_input("Username", placeholder="e.g., admin")
             password = st.text_input("Password", type="password", placeholder="••••••••")
             hospital = st.selectbox("Assigning Hospital", ["Hospital1", "Hospital2"])
             
             st.markdown("<br>", unsafe_allow_html=True)
-            login_btn = st.form_submit_button("Access Dashboard", use_container_width=True)
+            login_btn = st.form_submit_button("Access Dashboard")
 
         if login_btn:
             if username == "admin" and password == "admin123":
@@ -111,17 +145,16 @@ def login_page():
                 st.rerun()
             else:
                 st.error("Invalid Credentials. Please check and try again.")
-        st.markdown("</div>", unsafe_allow_html=True)
 
 # Show login if not logged in
 if not st.session_state["logged_in"]:
     login_page()
     st.stop()
 
-# Apply the theme to the rest of the app
+# Apply the theme to the rest of the app once logged in
 apply_global_theme()
 
-#  LOAD DATA 
+# ===================== LOAD DATA =====================
 @st.cache_data
 def load_data(hospital_name):
     try:
@@ -158,7 +191,7 @@ if st.sidebar.button("Logout"):
     st.session_state["hospital"] = None
     st.rerun()
 
-# DASHBOARD 
+# ===================== DASHBOARD =====================
 if page == "Overview":
     st.title("🏥 Hospital Overview")
     st.markdown("---")
@@ -179,7 +212,7 @@ if page == "Overview":
     with st.expander("View Cleaned Data"):
         st.dataframe(clean_df.head(), use_container_width=True)
 
-#  VISUALIZATIONS 
+# ===================== VISUALIZATIONS =====================
 elif page == "Visualizations":
     st.title("📈 Analytics Visualizations")
 
@@ -242,27 +275,77 @@ elif page == "Forecasting":
             forecast = model_fit.forecast(steps=forecast_steps)
             future_dates = pd.date_range(start=daily[date_col].max(), periods=forecast_steps+1, freq="D")[1:]
 
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=daily[date_col], y=daily["admissions"], mode='lines', name='Actual', line=dict(color=SECONDARY_COLOR)))
+            fig.add_trace(go.Scatter(x=future_dates, y=forecast, mode='lines+markers', name='Forecast', line=dict(color=PRIMARY_COLOR, dash='dash')))
+            fig.update_layout(title="Admissions Forecast (ARIMA)", xaxis_title="Date", yaxis_title="Admissions", hovermode="x unified")
+            st.plotly_chart(fig, use_container_width=True)
 
+# ===================== AI CHATBOT =====================
+elif page == "AI Chatbot":
+    st.title("🤖 Hospital AI Assistant")
+    
+    if not api_configured:
+        st.warning("⚠️ Gemini API Key not found. Please add `GEMINI_API_KEY = 'your_key_here'` to `.streamlit/secrets.toml`.")
+    else:
+        st.info(f"Ask me about data patterns, hospital operations, or bed occupancy metrics for {st.session_state.hospital}!")
+        
+        for msg in st.session_state.messages:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
 
+        if prompt := st.chat_input("E.g., What is the average age of our patients?"):
+            st.chat_message("user").markdown(prompt)
+            st.session_state.messages.append({"role": "user", "content": prompt})
 
+            system_context = f"""
+            You are a helpful data analytics assistant for a Streamlit hospital dashboard.
+            The user is looking at data for: {st.session_state.hospital}.
+            
+            Here is the summary of the current dataset they are analyzing:
+            - Total Records: {len(df)}
+            - Columns available: {', '.join(df.columns)}
+            
+            Statistical Summary of the data:
+            {df.describe().to_markdown()}
+            
+            Please answer the following user query accurately based ONLY on the data summary provided above. 
+            Keep your answer concise, professional, and do not show the raw markdown tables to the user.
+            
+            User Query: {prompt}
+            """
 
+            with st.chat_message("assistant"):
+                try:
+                    response = model.generate_content(system_context)
+                    st.markdown(response.text)
+                    st.session_state.messages.append({"role": "assistant", "content": response.text})
+                except Exception as e:
+                    st.error(f"API Error: {e}")
 
+# ===================== DATABASE =====================
+elif page == "Database":
+    st.title("🗄️ SQLite Database View")
+    st.dataframe(load_from_db(table_name), use_container_width=True)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# ===================== FOOTER =====================
+st.markdown("<br><br><br>", unsafe_allow_html=True)
+st.markdown(f"""
+<style>
+.footer {{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: {SECONDARY_COLOR};
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    z-index: 999;
+}}
+</style>
+<div class="footer">
+    Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
+</div>
+""", unsafe_allow_html=True)
