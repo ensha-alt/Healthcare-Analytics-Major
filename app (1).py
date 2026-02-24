@@ -1,4 +1,4 @@
-# ===================== IMPORTS =====================
+#  IMPORTS 
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -10,20 +10,20 @@ import sqlite3
 import google.generativeai as genai
 from statsmodels.tsa.arima.model import ARIMA
 
-# ===================== PAGE CONFIG =====================
+# PAGE CONFIG 
 st.set_page_config(
     page_title="Healthcare Analytics with Forecast",
     page_icon="🏥",
     layout="wide"
 )
 
-# ===================== THEME COLORS =====================
+# THEME COLORS 
 PRIMARY_COLOR = "#10b981" # Emerald Green
 SECONDARY_COLOR = "#0d2e33" # Deep Teal
 BG_COLOR = "#f8fafc"
 CHART_COLORS = ['#10b981', '#0d2e33', '#3b82f6', '#f59e0b', '#ef4444']
 
-# ================= SESSION STATE =================
+# SESSION STATE 
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
 if "hospital" not in st.session_state:
@@ -31,8 +31,7 @@ if "hospital" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# ===================== GEMINI API CONFIG =====================
-# Requires a .streamlit/secrets.toml file with: GEMINI_API_KEY = "your_key"
+# GEMINI API CONFIG 
 try:
     genai.configure(api_key=st.secrets.get("GEMINI_API_KEY", ""))
     model = genai.GenerativeModel('gemini-pro')
@@ -40,7 +39,7 @@ try:
 except Exception:
     api_configured = False
 
-# ===================== GLOBAL CSS THEME =====================
+# GLOBAL CSS THEME
 def apply_global_theme():
     st.markdown(f"""
         <style>
@@ -68,7 +67,7 @@ def apply_global_theme():
         </style>
     """, unsafe_allow_html=True)
 
-# ===================== DYNAMIC LOGIN PAGE =====================
+# DYNAMIC LOGIN PAGE 
 def login_page():
     st.markdown(f"""
         <style>
@@ -156,7 +155,7 @@ if not st.session_state["logged_in"]:
 # Apply the theme to the rest of the app once logged in
 apply_global_theme()
 
-# ===================== LOAD DATA =====================
+# LOAD DATA
 @st.cache_data
 def load_data(hospital_name):
     try:
@@ -173,14 +172,14 @@ def load_data(hospital_name):
 
 df, table_name = load_data(st.session_state.hospital)
 
-# ===================== SQLITE =====================
+# SQLITE 
 conn = sqlite3.connect("hospital_major_project.db", check_same_thread=False)
 df.to_sql(table_name, conn, if_exists="replace", index=False)
 
 def load_from_db(table):
     return pd.read_sql(f"SELECT * FROM {table}", conn)
 
-# ===================== SIDEBAR =====================
+# SIDEBAR 
 st.sidebar.image("https://cdn-icons-png.flaticon.com/512/3063/3063176.png", width=50)
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Overview", "Visualizations", "Correlation", "Forecasting", "AI Chatbot", "Database"])
@@ -193,7 +192,7 @@ if st.sidebar.button("Logout"):
     st.session_state["hospital"] = None
     st.rerun()
 
-# ===================== DASHBOARD =====================
+#  DASHBOARD 
 if page == "Overview":
     st.title("🏥 Hospital Overview")
     st.markdown("---")
@@ -214,7 +213,7 @@ if page == "Overview":
     with st.expander("View Cleaned Data"):
         st.dataframe(clean_df.head(), use_container_width=True)
 
-# ===================== VISUALIZATIONS =====================
+# VISUALIZATIONS 
 elif page == "Visualizations":
     st.title("📈 Analytics Visualizations")
 
@@ -248,14 +247,14 @@ elif page == "Visualizations":
             fig = px.line(daily, x=date_col, y="count", title="Daily Trend", color_discrete_sequence=[SECONDARY_COLOR])
             st.plotly_chart(fig, use_container_width=True)
 
-# ===================== CORRELATION =====================
+# CORRELATION 
 elif page == "Correlation":
     st.title("🔗 Correlation Matrix")
     corr = df.select_dtypes(include=np.number).corr()
     fig = px.imshow(corr, text_auto=True, aspect="auto", title="Numerical Feature Correlation", color_continuous_scale="Tealgrn")
     st.plotly_chart(fig, use_container_width=True)
 
-# ===================== FORECASTING =====================
+# FORECASTING 
 elif page == "Forecasting":
     st.title("🔮 Daily Admissions Forecast")
     date_cols = [c for c in df.columns if "date" in c.lower()]
@@ -283,8 +282,8 @@ elif page == "Forecasting":
             fig.update_layout(title="Admissions Forecast (ARIMA)", xaxis_title="Date", yaxis_title="Admissions", hovermode="x unified")
             st.plotly_chart(fig, use_container_width=True)
 
-# ===================== AI CHATBOT =====================
-# ===================== AI CHATBOT =====================
+# AI CHATBOT 
+
 elif page == "AI Chatbot":
     st.title("🤖 Clara - Hospital AI Assistant")
     
@@ -326,12 +325,12 @@ elif page == "AI Chatbot":
                 except Exception as e:
                     st.error(f"API Error: {e}")
                     
-# ===================== DATABASE =====================
+# DATABASE 
 elif page == "Database":
     st.title("🗄️ SQLite Database View")
     st.dataframe(load_from_db(table_name), use_container_width=True)
 
-# ===================== FOOTER =====================
+# FOOTER 
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 st.markdown(f"""
 <style>
@@ -352,6 +351,7 @@ st.markdown(f"""
     Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
