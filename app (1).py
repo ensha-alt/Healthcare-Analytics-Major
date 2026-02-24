@@ -284,13 +284,14 @@ elif page == "Forecasting":
             st.plotly_chart(fig, use_container_width=True)
 
 # ===================== AI CHATBOT =====================
-elif page == "AI Assistant":
-    st.title("🤖Clara- Hospital AI Assistant")
+# ===================== AI CHATBOT =====================
+elif page == "AI Chatbot":
+    st.title("🤖 Clara - Hospital AI Assistant")
     
     if not api_configured:
         st.warning("⚠️ Gemini API Key not found. Please add `GEMINI_API_KEY = 'your_key_here'` to `.streamlit/secrets.toml`.")
     else:
-        st.info(f"Ask me about data patterns, hospital operations, or bed occupancy metrics for {st.session_state.hospital}!")
+        st.info(f"Hi! I'm Clara. Ask me about data patterns, hospital operations, or bed occupancy metrics for {st.session_state.hospital}!")
         
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]):
@@ -301,7 +302,7 @@ elif page == "AI Assistant":
             st.session_state.messages.append({"role": "user", "content": prompt})
 
             system_context = f"""
-            You are Clara, a helpful data analytics assistant for a Streamlit hospital dashboard.
+            You are Clara, a helpful and professional data analytics assistant for a Streamlit hospital dashboard.
             The user is looking at data for: {st.session_state.hospital}.
             
             Here is the summary of the current dataset they are analyzing:
@@ -324,7 +325,7 @@ elif page == "AI Assistant":
                     st.session_state.messages.append({"role": "assistant", "content": response.text})
                 except Exception as e:
                     st.error(f"API Error: {e}")
-
+                    
 # ===================== DATABASE =====================
 elif page == "Database":
     st.title("🗄️ SQLite Database View")
@@ -351,6 +352,7 @@ st.markdown(f"""
     Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
