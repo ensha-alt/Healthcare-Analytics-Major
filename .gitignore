@@ -1,0 +1,38 @@
+# ==========================================
+# STREAMLIT SECRETS (CRITICAL)
+# ==========================================
+# Keeps your Gemini API key and other passwords safe
+.streamlit/secrets.toml
+
+# ==========================================
+# DATABASES
+# ==========================================
+# Prevents uploading your local SQLite database
+*.db
+*.sqlite3
+hospital_major_project.db
+
+# ==========================================
+# ENVIRONMENT & CACHE
+# ==========================================
+# Virtual environments
+venv/
+env/
+.env
+
+# Python cache files (speeds up execution locally, but unnecessary on GitHub)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ==========================================
+# JUPYTER NOTEBOOKS
+# ==========================================
+# Ignores autosaves from when you cleaned your dataset
+.ipynb_checkpoints/
+
+# ==========================================
+# OS GENERATED FILES
+# ==========================================
+.DS_Store
+Thumbs.db
