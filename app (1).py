@@ -216,7 +216,57 @@ if page == "Overview":
 
 # ===================== VISUALIZATIONS =====================
 elif page == "Visualizations":
-    st.title("📈Analytics Visualizations")
+    st.title("📈 Analytics Visualizations")
+
+    col1, col2 = st.columns(2)
+    
+    if "department" in df.columns:
+        with col1:
+            fig = px.pie(df, names="department", title="Department Distribution", color_discrete_sequence=CHART_COLORS)
+            st.plotly_chart(fig, use_container_width=True)
+            
+    if "gender" in df.columns:
+        with col2:
+            fig = px.bar(df, x="gender", title="Gender Distribution", color="gender", color_discrete_sequence=CHART_COLORS)
+            st.plotly_chart(fig, use_container_width=True)
+    elif "status" in df.columns:
+        with col2:
+            fig = px.pie(df, names="status", title="Appointment Status", color_discrete_sequence=CHART_COLORS)
+            st.plotly_chart(fig, use_container_width=True)
+
+    col3, col4 = st.columns(2)
+    if "age" in df.columns:
+        with col3:
+            fig = px.histogram(df, x="age", nbins=30, title="Age Distribution", color_discrete_sequence=[PRIMARY_COLOR])
+            st.plotly_chart(fig, use_container_width=True)
+
+    date_cols = [c for c in df.columns if "date" in c.lower()]
+    if date_cols:
+        date_col = date_cols[0]
+        daily = df.groupby(date_col).size().reset_index(name="count")
+        with col4:
+            fig = px.line(daily, x=date_col, y="count", title="Daily Trend", color_discrete_sequence=[SECONDARY_COLOR])
+            st.plotly_chart(fig, use_container_width=True)
+
+# ===================== CORRELATION =====================
+elif page == "Correlation":
+    st.title("🔗 Correlation Matrix")
+    corr = df.select_dtypes(include=np.number).corr()
+    fig = px.imshow(corr, text_auto=True, aspect="auto", title="Numerical Feature Correlation", color_continuous_scale="Tealgrn")
+    st.plotly_chart(fig, use_container_width=True)
+
+# ===================== FORECASTING =====================
+elif page == "Forecasting":
+    st.title("🔮 Daily Admissions Forecast")
+    date_cols = [c for c in df.columns if "date" in c.lower()]
+
+    if not date_cols:
+        st.warning("No date column found for forecasting.")
+    else:
+        date_col = date_cols[0]
+        df[date_col] = pd.to_datetime(df[date_col])
+        daily = df.groupby(date_col).size().reset_index(name="admissions")
+
         if len(daily) < 20:
             st.warning("Not enough data points for ARIMA forecasting.")
         else:
@@ -298,8 +348,6 @@ st.markdown(f"""
 }}
 </style>
 <div class="footer">
-    Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
+    Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan
 </div>
 """, unsafe_allow_html=True)
-
-
