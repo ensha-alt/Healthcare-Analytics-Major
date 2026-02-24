@@ -72,10 +72,10 @@ def apply_global_theme():
 def login_page():
     st.markdown(f"""
         <style>
-        /* 1. Dark, professional gradient background for the whole page */
+        /* Dark gradient background */
         .stApp {{ background: linear-gradient(135deg, #0f172a 0%, #0d2e33 100%); }}
         
-        /* 2. Ensure the title is bright white and legible */
+        /* Bright white title */
         .main-title {{ 
             color: #ffffff !important; 
             font-size: 36px; 
@@ -85,7 +85,7 @@ def login_page():
             font-family: 'Segoe UI', sans-serif;
         }}
         
-        /* 3. Ensure the subtitle is light grey and readable */
+        /* Light grey subtitle */
         .sub-title {{ 
             color: #cbd5e1 !important; 
             font-size: 16px; 
@@ -93,7 +93,7 @@ def login_page():
             margin-bottom: 25px; 
         }}
         
-        /* 4. Make the Streamlit Form itself act as the white card */
+        /* White Card Form */
         [data-testid="stForm"] {{
             background-color: #ffffff;
             padding: 30px;
@@ -102,7 +102,7 @@ def login_page():
             border: none;
         }}
         
-        /* 5. Style the Login button */
+        /* Login Button */
         [data-testid="stFormSubmitButton"] > button {{
             width: 100%;
             background-color: #10b981;
@@ -125,7 +125,9 @@ def login_page():
     _, col2, _ = st.columns([1, 1.2, 1])
 
     with col2:
-        st.image("https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop", use_container_width=True)
+        # NEW PROFESSIONAL HEALTHCARE IMAGE ADDED HERE
+        st.image("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=2070&q=80", use_container_width=True)
+        
         st.markdown("<h2 class='main-title'>Healthcare Analytics</h2>", unsafe_allow_html=True)
         st.markdown("<p class='sub-title'>Predictive insights for modern hospital management</p>", unsafe_allow_html=True)
 
@@ -214,57 +216,7 @@ if page == "Overview":
 
 # ===================== VISUALIZATIONS =====================
 elif page == "Visualizations":
-    st.title("📈 Analytics Visualizations")
-
-    col1, col2 = st.columns(2)
-    
-    if "department" in df.columns:
-        with col1:
-            fig = px.pie(df, names="department", title="Department Distribution", color_discrete_sequence=CHART_COLORS)
-            st.plotly_chart(fig, use_container_width=True)
-            
-    if "gender" in df.columns:
-        with col2:
-            fig = px.bar(df, x="gender", title="Gender Distribution", color="gender", color_discrete_sequence=CHART_COLORS)
-            st.plotly_chart(fig, use_container_width=True)
-    elif "status" in df.columns:
-        with col2:
-            fig = px.pie(df, names="status", title="Appointment Status", color_discrete_sequence=CHART_COLORS)
-            st.plotly_chart(fig, use_container_width=True)
-
-    col3, col4 = st.columns(2)
-    if "age" in df.columns:
-        with col3:
-            fig = px.histogram(df, x="age", nbins=30, title="Age Distribution", color_discrete_sequence=[PRIMARY_COLOR])
-            st.plotly_chart(fig, use_container_width=True)
-
-    date_cols = [c for c in df.columns if "date" in c.lower()]
-    if date_cols:
-        date_col = date_cols[0]
-        daily = df.groupby(date_col).size().reset_index(name="count")
-        with col4:
-            fig = px.line(daily, x=date_col, y="count", title="Daily Trend", color_discrete_sequence=[SECONDARY_COLOR])
-            st.plotly_chart(fig, use_container_width=True)
-
-# ===================== CORRELATION =====================
-elif page == "Correlation":
-    st.title("🔗 Correlation Matrix")
-    corr = df.select_dtypes(include=np.number).corr()
-    fig = px.imshow(corr, text_auto=True, aspect="auto", title="Numerical Feature Correlation", color_continuous_scale="Tealgrn")
-    st.plotly_chart(fig, use_container_width=True)
-
-# ===================== FORECASTING =====================
-elif page == "Forecasting":
-    st.title("🔮 Daily Admissions Forecast")
-    date_cols = [c for c in df.columns if "date" in c.lower()]
-
-    if not date_cols:
-        st.warning("No date column found for forecasting.")
-    else:
-        date_col = date_cols[0]
-        df[date_col] = pd.to_datetime(df[date_col])
-        daily = df.groupby(date_col).size().reset_index(name="admissions")
-
+    st.title("📈
         if len(daily) < 20:
             st.warning("Not enough data points for ARIMA forecasting.")
         else:
@@ -349,3 +301,4 @@ st.markdown(f"""
     Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
 </div>
 """, unsafe_allow_html=True)
+
