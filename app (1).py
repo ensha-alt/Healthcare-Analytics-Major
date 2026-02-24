@@ -240,7 +240,7 @@ elif page == "Forecasting":
 
             forecast_steps = st.slider("Select Forecast Horizon (Days)", 7, 30, 10)
             forecast = model_fit.forecast(steps=forecast_steps)
-            future_dates = pd.date_range(start=daily[date_col].max(), periods=forecast_steps+1,
+            future_dates = pd.date_range(start=daily[date_col].max(), periods=forecast_steps+1, freq="D")[1:]
 
 
 
