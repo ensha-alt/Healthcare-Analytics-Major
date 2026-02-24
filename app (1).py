@@ -35,7 +35,7 @@ if "messages" not in st.session_state:
 # Requires a .streamlit/secrets.toml file with: GEMINI_API_KEY = "your_key"
 try:
     genai.configure(api_key=st.secrets.get("GEMINI_API_KEY", ""))
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-flash-latest')
     api_configured = True
 except Exception:
     api_configured = False
@@ -352,6 +352,7 @@ st.markdown(f"""
     Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
