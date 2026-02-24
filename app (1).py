@@ -216,7 +216,7 @@ if page == "Overview":
 
 # ===================== VISUALIZATIONS =====================
 elif page == "Visualizations":
-    st.title("📈
+    st.title("📈Analytics Visualizations")
         if len(daily) < 20:
             st.warning("Not enough data points for ARIMA forecasting.")
         else:
@@ -301,4 +301,5 @@ st.markdown(f"""
     Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
 </div>
 """, unsafe_allow_html=True)
+
 
