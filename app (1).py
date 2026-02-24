@@ -132,7 +132,7 @@ def login_page():
         st.markdown("<p class='sub-title'>Predictive insights for modern hospital management</p>", unsafe_allow_html=True)
 
         with st.form("login_form"):
-            st.markdown("#### Secure Access")
+            st.markdown("#### Login")
             username = st.text_input("Username", placeholder="e.g., admin")
             password = st.text_input("Password", type="password", placeholder="••••••••")
             hospital = st.selectbox("Assigning Hospital", ["Hospital1", "Hospital2"])
@@ -284,8 +284,8 @@ elif page == "Forecasting":
             st.plotly_chart(fig, use_container_width=True)
 
 # ===================== AI CHATBOT =====================
-elif page == "AI Chatbot":
-    st.title("🤖 Hospital AI Assistant")
+elif page == "AI Assistant":
+    st.title("🤖Clara- Hospital AI Assistant")
     
     if not api_configured:
         st.warning("⚠️ Gemini API Key not found. Please add `GEMINI_API_KEY = 'your_key_here'` to `.streamlit/secrets.toml`.")
@@ -301,7 +301,7 @@ elif page == "AI Chatbot":
             st.session_state.messages.append({"role": "user", "content": prompt})
 
             system_context = f"""
-            You are a helpful data analytics assistant for a Streamlit hospital dashboard.
+            You are Clara, a helpful data analytics assistant for a Streamlit hospital dashboard.
             The user is looking at data for: {st.session_state.hospital}.
             
             Here is the summary of the current dataset they are analyzing:
@@ -351,5 +351,6 @@ st.markdown(f"""
     Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
 </div>
 """, unsafe_allow_html=True)
+
 
 
