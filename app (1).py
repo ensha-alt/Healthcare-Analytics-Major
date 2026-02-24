@@ -126,7 +126,7 @@ def login_page():
 
     with col2:
         # NEW PROFESSIONAL HEALTHCARE IMAGE ADDED HERE
-        st.image("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=2070&q=80", use_container_width=True)
+        st.image("https://www.t8nmagazine.com/wp-content/uploads/2017/01/Health_Care_1.jpg", use_container_width=True)
         
         st.markdown("<h2 class='main-title'>Healthcare Analytics</h2>", unsafe_allow_html=True)
         st.markdown("<p class='sub-title'>Predictive insights for modern hospital management</p>", unsafe_allow_html=True)
@@ -351,3 +351,4 @@ st.markdown(f"""
     Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan
 </div>
 """, unsafe_allow_html=True)
+
