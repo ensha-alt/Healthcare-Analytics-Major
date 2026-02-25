@@ -126,7 +126,7 @@ def login_page():
     with col2:
         # NEW PROFESSIONAL HEALTHCARE IMAGE ADDED HERE
         
-        st.image("imggifproject.gif", use_container_width=True)
+        st.image("dataset/imggifproject.gif", use_container_width=True)
         
         st.markdown("<h2 class='main-title'>Healthcare Analytics</h2>", unsafe_allow_html=True)
         st.markdown("<p class='sub-title'>Predictive insights for modern hospital management</p>", unsafe_allow_html=True)
@@ -352,6 +352,7 @@ st.markdown(f"""
     Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
