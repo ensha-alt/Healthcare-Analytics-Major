@@ -32,12 +32,25 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 # GEMINI API CONFIG 
+
 try:
     genai.configure(api_key=st.secrets.get("GEMINI_API_KEY", ""))
-    model = genai.GenerativeModel('gemini-pro')
-    api_configured = True
-except Exception:
+    
+    # 1. Ask Google's servers for every model your key is allowed to use
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    
+    # 2. Automatically pick the best available text model
+    if available_models:
+        # Prioritize 'flash' models for speed, otherwise just grab the first valid one
+        chosen_model = next((m for m in available_models if "flash" in m), available_models[0])
+        model = genai.GenerativeModel(chosen_model)
+        api_configured = True
+    else:
+        api_configured = False
+        
+except Exception as e:
     api_configured = False
+    st.error(f"Failed to connect to AI: {e}")
 
 # GLOBAL CSS THEME
 def apply_global_theme():
@@ -195,7 +208,7 @@ if st.sidebar.button("Logout"):
 
 #  DASHBOARD 
 if page == "Overview":
-    st.title("🏥 Hospital Overview")
+    st.title("Hospital Overview")
     st.markdown("---")
 
     c1, c2, c3, c4 = st.columns(4)
@@ -216,7 +229,7 @@ if page == "Overview":
 
 # VISUALIZATIONS 
 elif page == "Visualizations":
-    st.title("📈 Analytics Visualizations")
+    st.title("Analytics Visualizations")
 
     col1, col2 = st.columns(2)
     
@@ -257,7 +270,7 @@ elif page == "Correlation":
 
 # FORECASTING 
 elif page == "Forecasting":
-    st.title("🔮 Daily Admissions Forecast")
+    st.title("Daily Admissions Forecast")
     date_cols = [c for c in df.columns if "date" in c.lower()]
 
     if not date_cols:
@@ -328,7 +341,7 @@ elif page == "AI Chatbot":
                     
 # DATABASE 
 elif page == "Database":
-    st.title("🗄️ SQLite Database View")
+    st.title("SQLite Database View")
     st.dataframe(load_from_db(table_name), use_container_width=True)
 
 # FOOTER 
@@ -352,6 +365,7 @@ st.markdown(f"""
     Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
