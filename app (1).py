@@ -263,7 +263,7 @@ elif page == "Visualizations":
 
 # CORRELATION 
 elif page == "Correlation":
-    st.title("🔗 Correlation Matrix")
+    st.title("Correlation Matrix")
     corr = df.select_dtypes(include=np.number).corr()
     fig = px.imshow(corr, text_auto=True, aspect="auto", title="Numerical Feature Correlation", color_continuous_scale="Tealgrn")
     st.plotly_chart(fig, use_container_width=True)
@@ -365,6 +365,7 @@ st.markdown(f"""
     Healthcare Analytics Dashboard | Facility: <b>{st.session_state.hospital}</b> | © 2026 Insha Farhan & Diksha Tiwari
 </div>
 """, unsafe_allow_html=True)
+
 
 
 
