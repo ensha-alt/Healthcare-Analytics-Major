@@ -92,8 +92,6 @@ If you find this project helpful, please consider giving it a ⭐!
 URL of streamlit application:
 https://healthcare-analytics-academic-project.streamlit.app/
 
-Let me know if you need to add any specific installation commands or file names to the setup section!
-
 Contributed by:
 Insha Farhan and Diksha Tiwari
 
